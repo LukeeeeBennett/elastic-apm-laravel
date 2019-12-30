@@ -39,9 +39,16 @@ class RecordTransaction
         $transaction = $this->agent->startTransaction(
             $this->getTransactionName($request)
         );
+        $span = $this->agent->factory()->newSpan('request', $transaction);
+        $span->setType('request');
+        $span->setAction('request');
+        $span->start();
 
         // await the outcome
         $response = $next($request);
+
+        $span->stop();
+        $this->agent->putEvent($span);
 
         $transaction->setResponse([
             'finished' => true,
@@ -63,8 +70,6 @@ class RecordTransaction
             'result' => $response->getStatusCode(),
             'type' => 'HTTP'
         ]);
-
-        $transaction->setSpans(app('query-log')->toArray());
 
         if (config('elastic-apm.transactions.use_route_uri')) {
             $transaction->setTransactionName($this->getRouteUriTransactionName($request));
