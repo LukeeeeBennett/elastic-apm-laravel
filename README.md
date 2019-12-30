@@ -111,3 +111,10 @@ Once published, open the `config/elastic-apm.php` file and review the various se
 Laravel provides classes to support running unit and feature tests with PHPUnit. In most cases, you will want to explicitly disable APM during testing since it is enabled by default. Refer to the Laravel documentation for more information (https://laravel.com/docs/5.7/testing).
 
 Because the APM agent checks it's active status using a strict boolean type, you must ensure your `APM_ACTIVE` value is a boolean `false` rather than simply a falsy value. The best way to accomplish this is to create an `.env.testing` file and include `APM_ACTIVE=false`, along with any other environment settings required for your tests. This file should be safe to include in your SCM.
+
+### Breaking changes
+
+#### 6.x to 7.x
+
+* See elastic-apm-php-agent breaking changes that affect the facade and underlying agent at [philkra/elastic-apm-php-agent](https://github.com/philkra/elastic-apm-php-agent)
+* ElasticApm::send() should no longer be called after ElasticApm::captureThrowable() in exception handlers // TODO: ??? confirm
